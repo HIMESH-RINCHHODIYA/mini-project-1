@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PriceCompare – Smart Product Price Comparison</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              300: '#a5b4fc',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81'
+            }
+          },
+          boxShadow: {
+            glow: '0 0 40px rgba(99,102,241,0.25)'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .hero-bg {
+      background: radial-gradient(60rem 30rem at 80% -10%, rgba(99,102,241,.25), transparent),
+                  radial-gradient(40rem 20rem at 10% -10%, rgba(236,72,153,.18), transparent),
+                  radial-gradient(80rem 50rem at 50% 120%, rgba(34,197,94,.18), transparent),
+                  linear-gradient(180deg, #0b1020 0%, #0b1226 100%);
+    }
+    .gridline { 
+      background-image: linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px), 
+                        linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px); 
+      background-size: 24px 24px; 
+    }
+  </style>
+</head>
+<body class="text-white bg-[#0b1020]">
+  <!-- Header -->
+  <header class="sticky top-0 z-40 backdrop-blur border-b border-white/10 bg-black/30">
+    <div class="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2">
+        <div class="h-9 w-9 rounded-xl bg-gradient-to-br from-brand-400 via-pink-500 to-emerald-400"></div>
+        <span class="font-semibold">PriceCompare</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-6 text-sm text-white/80">
+        <a href="#features" class="hover:text-white">Features</a>
+        <a href="#how" class="hover:text-white">How it works</a>
+        <a href="#examples" class="hover:text-white">Examples</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="relative hero-bg overflow-hidden">
+    <div class="absolute inset-0 gridline opacity-[.06] pointer-events-none"></div>
+    <div class="mx-auto max-w-7xl px-4 py-20 lg:py-28">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div class="space-y-6">
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.05]">
+            Compare <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-pink-400 to-emerald-400">product prices</span> instantly
+          </h1>
+          <p class="text-white/70 text-lg max-w-xl">
+            Search any product and see prices from top stores like Amazon, Flipkart, Myntra and more — find the best deal in seconds.
+          </p>
+          <!-- Updated Search Bar -->
+          <div class="flex flex-col sm:flex-row gap-3">
+            <input id="searchProduct" type="text" placeholder="Enter product name to compare..." 
+              class="w-full sm:w-72 rounded-lg px-4 py-3 bg-white/10 border border-white/20 outline-none focus:ring-2 focus:ring-brand-500">
+            <button id="searchBtn" class="px-5 py-3 rounded-lg bg-brand-500 hover:bg-brand-600 font-medium">Compare Prices</button>
+          </div>
+        </div>
+
+        <!-- Result Preview -->
+        <div class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-6 shadow-xl">
+          <h3 class="text-sm text-white/70 mb-3">Price Comparison Result</h3>
+          <div id="result" class="text-white/60 text-sm italic">Enter a product name and click “Compare Prices”.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="py-20">
+    <div class="mx-auto max-w-7xl px-4">
+      <h2 class="text-3xl font-bold mb-8">Why use PriceCompare?</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <div class="font-semibold mb-2">Real-time prices</div>
+          <p class="text-white/70">Get the latest deals pulled from multiple e-commerce platforms.</p>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <div class="font-semibold mb-2">Best deal first</div>
+          <p class="text-white/70">We automatically highlight the lowest price across all stores.</p>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <div class="font-semibold mb-2">Save time & money</div>
+          <p class="text-white/70">No more hopping tabs — compare everything in one place.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 border-t border-white/10">
+    <div class="mx-auto max-w-7xl px-4 flex justify-between text-sm text-white/70">
+      <span>© <span id="year"></span> PriceCompare</span>
+      <div class="flex gap-6">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    document.getElementById('searchBtn').addEventListener('click', () => {
+      const query = document.getElementById('searchProduct').value.trim();
+      if (!query) {
+        document.getElementById('result').innerHTML = "<span class='text-red-400'>Please enter a product name.</span>";
+        return;
+      }
+
+      document.getElementById('searchBtn').addEventListener('click', async () => {
+  const query = document.getElementById('searchProduct').value.trim();
+  const resultDiv = document.getElementById('result');
+
+  if (!query) {
+    resultDiv.innerHTML = "<span class='text-red-400'>Please enter a product name.</span>";
+    return;
+  }
+
+  resultDiv.innerHTML = "<span class='text-white/50'>Searching...</span>";
+
+  try {
+    const res = await fetch('http://127.0.0.1:5000/compare', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product: query })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || "Server error");
+
+    let table = `<table class="w-full text-sm border-collapse">
+      <thead><tr class="border-b border-white/20 text-white/70">
+        <th class="py-2 text-left">Store</th>
+        <th class="py-2 text-left">Price</th>
+        <th class="py-2">Link</th>
+      </tr></thead><tbody>`;
+
+    data.prices.forEach(p => {
+      table += `<tr class="border-b border-white/10">
+        <td class="py-2">${p.store}</td>
+        <td class="py-2 font-medium">${p.price}</td>
+        <td class="py-2 text-center">
+          <a href="${p.link}" class="text-brand-400 hover:underline" target="_blank">Buy</a>
+        </td>
+      </tr>`;
+    });
+
+    table += "</tbody></table>";
+    resultDiv.innerHTML = table;
+
+  } catch (err) {
+    resultDiv.innerHTML = `<span class='text-red-400'>Error: ${err.message}</span>`;
+  }
+});
+
+
+      let table = `<table class="w-full text-sm border-collapse">
+        <thead><tr class="border-b border-white/20 text-white/70">
+          <th class="py-2 text-left">Store</th>
+          <th class="py-2 text-left">Price</th>
+          <th class="py-2">Link</th>
+        </tr></thead><tbody>`;
+
+      prices.forEach(p => {
+        table += `<tr class="border-b border-white/10">
+          <td class="py-2">${p.store}</td>
+          <td class="py-2 font-medium">${p.price}</td>
+          <td class="py-2 text-center"><a href="${p.link}" class="text-brand-400 hover:underline">Buy</a></td>
+        </tr>`;
+      });
+
+      table += "</tbody></table>";
+      document.getElementById('result').innerHTML = table;
+    });
+  </script>
+</body>
+</html>
